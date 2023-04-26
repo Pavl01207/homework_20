@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Task 6</title>
+</head>
+<body>
+	<style>
+		button{
+			text-transform: uppercase;
+			text-align: center;
+			font-style: 20px;
+			padding: 10px;
+			font-weight: 700;
+			border-radius: 5px;
+			border: 2px solid #fb5607;
+			color: #fb5607;
+			background-color: transparent;
+			transition: background-color 0.5s ease 0s;
+		}
+		button:hover{
+			color: white;
+			border: 2px solid white;
+			background-color: #fb5607;
+			cursor: pointer;
+		}
+		h4{
+			color: #fb5607;
+		}
+		.container{
+			display: flex;
+			flex-direction: column;
+			gap: 1.25rem;
+		}
+		.item{
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
+		}
+		input{
+			padding: 5px;
+			font-size: 20px;
+			border: 2px solid #fb5607;
+			border-radius: 5px;
+			background-color: #fb54077e;
+			caret-color: #fb5607;
+			color: #fb5607;
+		}
+		input:focus{
+			background-color:antiquewhite;
+		}
+		#container>div{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 200px;
+		}
+	</style>
+	<div class="container">
+		<h4 class="title__container">Нова задача</h4>
+	<div class="item">
+		<label for="title">Текст задачі</label>
+		<input type="text" id="title" value="">
+	</div>
+	<div class="item">
+		<label for="priority">Пріоритетність задачі</label>
+		<input type="text" id="priority" value="">
+	</div>
+	<div>
+		<button id="add__btn">Додати задачу</button>
+	</div>
+	<h4 class="title__container">Список задач</h4>
+	<div class="item">
+		<div class="list">
+			<div>
+				<button id="clear__all">Очистити</button>
+			</div>
+			<div id="container"></div>
+		</div>
+	</div>
+	</div>
+	<script>
+		function clearAll(){
+			const button = this
+			const list = button.closest('.list')
+			list.lastElementChild.innerHTML = ''
+		}
+		function onTaskDelete(){
+			this.parentElement.remove()
+		}
+		function onAddTask(){
+			const taskTitle = document.getElementById('title').value 
+			const taskPriority = document.getElementById('priority').value
+			const div = document.createElement('div')
+			const span = document.createElement('span')
+			span.innerText = `${taskTitle} - ${taskPriority}`
+			div.append(span)
+			//
+			const btn = document.createElement('button')
+			btn.innerText = 'Delete'
+			btn.onclick = onTaskDelete
+			div.append(btn)
+			container.append(div)
+		}
+		add__btn.onclick = onAddTask
+		clear__all.onclick = clearAll
+	</script>
+</body>
+</html>

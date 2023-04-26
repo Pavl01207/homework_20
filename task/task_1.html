@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Task 1</title>
+</head>
+
+<body>
+	<style>
+		.container{
+			display: flex;
+			align-items: center;
+			gap: 1.25rem;
+			padding-top: 100px;
+		}
+		img{
+			width: 100px;
+			height: 150px;
+		}
+		.title{
+			width: 300px;
+			align-self: center;
+			font-weight: 700;
+		}
+		.value__container{
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			width: 130px;
+		}
+		.button__plus {
+			position: relative;
+			width: 35px;
+			height: 35px;
+			background: transparent;
+			cursor: pointer;
+			border: 2px solid #14213d;
+		}
+		.button__plus:after {
+			content: '';
+			position: absolute;
+			transform: translate(-50%, -50%);
+			height: 4px;
+			width: 50%;
+			background: #14213d;
+			top: 50%;
+			left: 50%;
+		}
+		.button__plus:before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: #14213d;
+			height: 50%;
+			width: 4px;
+		}
+		.button__plus:hover:before,
+		.button__plus:hover:after {
+			background: #9a031e;
+			transition: 0.2s;
+		}
+		.button__plus:hover {
+			border: 2px solid #9a031e;
+			transform: scale(1.1);
+			transition: 0.2s;
+		}
+		.button__minus {
+			position: relative;
+			width: 35px;
+			height: 35px;
+			background: transparent;
+			cursor: pointer;
+			border: 2px solid #14213d;
+		}
+		.button__minus:after {
+			content: '';
+			position: absolute;
+			transform: translate(-50%, -50%);
+			height: 4px;
+			width: 50%;
+			background: #14213d;
+			top: 50%;
+			left: 50%;
+		}
+		.button__minus:hover:after {
+			background: #9a031e;
+			transition: 0.2s;
+		}
+		.button__minus:hover {
+			border: 2px solid #9a031e;
+			transition: 0.2s;
+			transform: scale(1.1);
+		}
+		.title__result{
+			font-weight: 700;
+			text-transform: uppercase;
+		}
+		.noactive{
+			background-color: #14213d;
+		}
+		.title__result span{
+			display: inline-block;
+			text-align: right;
+			width: 100px;
+			padding-right: 5px;
+		}
+	</style>
+	<div class="main"></div>
+	<script>
+	/*Розробити елемент для вводу кількості вибраного товару за зразком 
+	(мінімальна кількість 1, максимальна кількість 10, при перевищенні блокувати кнопку)*/
+	class Basket{
+		constructor(imgSrc,title,price,minValue=0,maxValue=10,styleObject){
+			this.imgSrc = imgSrc
+			this.title = title
+			this.price = price
+			this.minValue = minValue
+			this.maxValue = maxValue
+			this.styleObject = styleObject
+			this.totalPrice = 0
+		}
+		addGood(){
+			if(this.minValue >= 10) {
+				this.btnPlus.classList.add('noactive')
+				this.btnPlus.setAttribute('disabled','true')
+			} else {
+				this.minValue++
+				this.spanValue.innerText = this.minValue
+				this.totalPrice+=parseInt(this.titleGood.getAttribute('price'))
+				this.spanResult.innerText = this.totalPrice
+				this.btnMinus.classList.remove('noactive')
+				this.btnMinus.removeAttribute('disabled')
+			}
+		}
+		minusGood(){
+			if(this.minValue <= 0){
+				this.btnMinus.classList.add('noactive')
+				this.btnMinus.setAttribute('disabled','true')
+			} else {
+				this.minValue--
+				this.spanValue.innerText = this.minValue
+				this.totalPrice-=parseInt(this.titleGood.getAttribute('price'))
+				this.spanResult.innerText = this.totalPrice
+				this.btnPlus.removeAttribute('disabled')
+				this.btnPlus.classList.remove('noactive')
+			}
+		}
+		render(targetSelector){
+			const mainContainer = document.createElement('div')
+			mainContainer.className = this.styleObject.container
+			//
+			const imgContainer = document.createElement('div')
+			imgContainer.className = this.styleObject.img
+			mainContainer.append(imgContainer)
+			//
+			const img = document.createElement('img')
+			img.src = this.imgSrc
+			imgContainer.append(img)
+			//
+			this.titleGood = document.createElement('div')
+			this.titleGood.className = this.styleObject.title
+			this.titleGood.innerText = this.title
+			this.titleGood.setAttribute('price',`${this.price}`)
+			mainContainer.append(this.titleGood)
+			//
+			const valueContainer = document.createElement('div')
+			valueContainer.className = this.styleObject.valueContainer
+			mainContainer.append(valueContainer)
+			//
+			this.btnMinus = document.createElement('button')
+			this.btnMinus.className = this.styleObject.btnMinus
+			valueContainer.append(this.btnMinus)
+			this.btnMinus.onclick = this.minusGood.bind(this)
+			//
+			this.spanValue = document.createElement('span')
+			this.spanValue.innerText = this.minValue
+			valueContainer.append(this.spanValue)
+			//
+			this.btnPlus = document.createElement('button')
+			this.btnPlus.className = this.styleObject.btnPlus
+			valueContainer.append(this.btnPlus)
+			this.btnPlus.onclick = this.addGood.bind(this)
+			//
+			const resultContainer = document.createElement('div')
+			resultContainer.className = this.styleObject.resultContainer
+			mainContainer.append(resultContainer)
+			//
+			const titleResult = document.createElement('div')
+			titleResult.className = this.styleObject.titleResult
+			titleResult.innerText = 'До сплати:'
+			this.spanResult = document.createElement('span')
+			this.spanResult.innerText = this.totalPrice
+			titleResult.append(this.spanResult)
+			titleResult.append('грн.')
+			resultContainer.append(titleResult)
+			//
+			document.querySelector(targetSelector).append(mainContainer)
+		}
+	}
+	window.onload = function(){
+		let book = new Basket('01.jpg','Деніел Канеман - Мислення швидке і повільне',400,0,10,styleObject)
+		book.render('.main')
+	}
+	let styleObject = {
+		container: 'container',
+		img: 'img__container',
+		title: 'title',
+		valueContainer: 'value__container',
+		btnMinus: 'button__minus',
+		btnPlus: 'button__plus',
+		resultContainer: 'result__container',
+		titleResult: 'title__result'
+	}
+	</script>
+</body>
+</html>

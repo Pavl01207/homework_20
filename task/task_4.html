@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Task 7</title>
+</head>
+<body>
+	<style>
+		body{
+			background-color:cadetblue;
+		}
+	</style>
+	<div id="main"></div>
+	<script>
+		class MovingObject{
+			constructor(imgSrcRun,imgSrcSleep,imgWidth,imgHeight){
+				this.imgSrcRun = imgSrcRun
+				this.imgSrcSleep = imgSrcSleep
+				this.imgWidth = imgWidth
+				this.imgHeight = imgHeight
+			}
+			getRandomNumber(min,max){
+				return min+Math.floor(Math.random()*(max-min+1))
+			}
+			updateImgPosition(){
+				this.img.style.left = this.left + 'px'
+				this.img.style.top = this.top + 'px'
+			}
+			move(){
+				const newLeft = this.left + this.vx
+				const newTop = this.top + this.vy
+				//
+				if(newLeft < 0 || newLeft+this.imgWidth > window.innerWidth){ 
+					this.vx = -this.vx
+				}
+				if(newTop < 0 || newTop+this.imgHeight > window.innerHeight) {
+					this.vy = -this.vy
+				}
+				this.left = newLeft
+				this.top = newTop
+				this.updateImgPosition()
+			}
+			start(){
+				this.moveInt = setInterval((
+					() => {this.move()}
+				),30)
+			}
+			catchСockroach(){
+				this.img.src = this.imgSrcSleep
+				clearInterval(this.moveInt)
+				setTimeout((
+					() => {
+						this.img.src = 'grave.png'
+					}),3000)
+			}
+			render(targetSelector){
+				this.container = document.querySelector(targetSelector)
+				this.container.className = 'back'
+				this.container.style.position = 'relative'
+				this.container.style.width = window.innerWidth+'px' 
+				this.container.style.height = window.innerHeight+'px'
+				//
+				this.img = document.createElement('img')
+				this.img.src = this.imgSrcRun
+				this.img.style.width = this.imgWidth+'px'
+				this.img.style.height = this.imgHeight+'px'
+				this.img.style.position = 'absolute'
+				this.img.onmouseover = this.catchСockroach.bind(this)
+				//
+				this.top = this.getRandomNumber(0,window.innerHeight)
+				this.img.style.top = this.top+'px'
+				//
+				this.left = this.getRandomNumber(0,window.innerWidth)
+				this.img.style.left = this.left+'px'
+				//
+				this.vx = this.getRandomNumber(1,5)
+				this.vy = this.getRandomNumber(1,5)
+				//
+				this.container.append(this.img)
+			}
+		}
+		window.onload = function(){
+			for(let i = 0; i < 20; i++){
+				let cockroach = new MovingObject('run.png','sleep.png',32,32)
+				cockroach.render('#main')
+				cockroach.start()
+			}
+		}
+	</script>
+</body>
+</html>
